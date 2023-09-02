@@ -38,7 +38,7 @@
 void SPI2_Init(void);  //初始化SPI端口
 void DMA_SPI_Init(uint32_t DMA_Addr,uint32_t Buffer_Size);
 u8 SPI2_ReadWriteByte(u8 TxData);
-
+void DMA_Transfer(void);
 #endif
 
 

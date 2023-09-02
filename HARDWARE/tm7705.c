@@ -35,14 +35,17 @@ u16 await=0;//设定通信等待值
 char value[5];//用于lcd显示
 char voltage1[5];//用于显示通道一的实际毫伏值
 char voltage2[5];//用于显示通道二的实际毫伏值
+
+
+
 /* -------------------------------- begin  -------------------------------- */
 /**
   * @Name    TM7705_Init
-  * @brief
-  * @param   : [输入/出]
+  * @brief  
+  * @param   type: [输入/出]  传入热电阻类型，不同的热电阻类型对应不同的参数
   * @retval
   * @author  DrMa
-  * @Data    2023-07-06
+  * @Data    2023-09-02
   * 1. ...
   * <modify staff>:
   * <data>        :
@@ -51,23 +54,42 @@ char voltage2[5];//用于显示通道二的实际毫伏值
  **/
 /* -------------------------------- end -------------------------------- */
 
-void TM7705_Init()
+void TM7705_Init(uint8_t type)
 {
-    //原值0x14
-    u8 Reg_Ins1=0x1C;//配置寄存器的设置  //0001 1100   正常工作模式 8倍增益 单极性 不使能缓冲
-    u8 Reg_Ins2=0x04;//时钟寄存器的设置 不禁能，不分频，50hz输出 ，20ms一个数据
-
-    TM7705_WriteReg(REG_SETUP,Reg_Ins1); //0x10 0x14   0001 0000
+    u8 general_clock_config=0x04;//时钟寄存器的设置 不禁能，不分频，50hz输出 ，20ms一个数据
+		u8 TR_config;
+		switch(type)
+		{
+			case 0:
+				TR_config=Pt100_config;
+				break;
+			case 1:
+				TR_config=Pt10_config;
+				break;
+			case 2:
+				TR_config=Cu100_config;
+				break;
+			case 3:
+				TR_config=Cu50_config;
+				break;
+		}
+    
+	
+    TM7705_WriteReg(REG_SETUP,TR_config); //0x10 0x14   0001 0000
     delay_ms(1);
-    TM7705_WriteReg(REG_CLOCK,Reg_Ins2); //0000 0100
+    TM7705_WriteReg(REG_CLOCK,general_clock_config); //0000 0100
     delay_ms(1);
 
-    TM7705_WriteReg(REG_SETUP_CH2,Reg_Ins1);//通道二也是正常工作模式 8倍增益 单极性 不使能缓冲
+	
+    TM7705_WriteReg(REG_SETUP_CH2,TR_config);//通道二也是正常工作模式 8倍增益 单极性 不使能缓冲
     delay_ms(1);
-    TM7705_WriteReg(REG_CLOCK_CH2,Reg_Ins2);//不禁能，不分频，50hz输出 ，20ms一个数据
+    TM7705_WriteReg(REG_CLOCK_CH2,general_clock_config);//不禁能，不分频，50hz输出 ，20ms一个数据
     delay_ms(1);
-
-
+		
+		TM7705_Calibself(type);
+		
+		
+		
 }
 
 
@@ -88,10 +110,27 @@ void TM7705_Init()
  **/
 /* -------------------------------- end -------------------------------- */
 
-void TM7705_Calibself()
+void TM7705_Calibself(uint8_t type)
 {
     u8 data=0;
-    u8 Reg_Ins=0x5C;  //配置寄存器，  自校正模式 ，8倍增益 ，单极性 缓冲不使能  0101 1100
+    u8 Reg_Ins;  //配置寄存器，  自校正模式 ，8倍增益 ，单极性 缓冲不使能  0101 1100
+	
+	switch(type)
+		{
+			case 0:
+				Reg_Ins=Pt100_config;
+				break;
+			case 1:
+				Reg_Ins=Pt10_config;
+				break;
+			case 2:
+				Reg_Ins=Cu100_config;
+				break;
+			case 3:
+				Reg_Ins=Cu50_config;
+				break;
+		}
+		Reg_Ins+=0x40;//转换为自校正模式
     //自校正通道一
     TM7705_WriteReg(REG_SETUP,Reg_Ins);
     delay_ms(190);
@@ -300,7 +339,7 @@ void DRDYINT_Init()
   * 1. ...
   * <modify staff>:
   * <data>        :
-  * <description> :vv
+  * <description> :
   * 2. ...
  **/
 /* -------------------------------- end -------------------------------- */
@@ -320,7 +359,7 @@ void EXTI15_10_IRQHandler()
         while(DataRDY!=0);//等待收到数据
         adVal1=TM7705_ReadData_CH1();
         //strcpy(value,ConvertToASC(adVal1));//ad值转化成字符串
-        strcpy(voltage1,ConvertToASC(adVal1*2500/8/65536));
+      //  strcpy(voltage1,ConvertToASC(adVal1*2500/8/65536));
         
 
         //}
@@ -338,7 +377,7 @@ void EXTI15_10_IRQHandler()
         while(DataRDY!=0);//等待收到数据
         adVal2=TM7705_ReadData_CH2();
         //strcpy(value,ConvertToASC(adVal2));//ad值转化成字符串
-        strcpy(voltage2,ConvertToASC(adVal2*2500/8/65536));
+     //   strcpy(voltage2,ConvertToASC(adVal2*2500/8/65536));
         
         sw=(sw+1)%2;
         break;

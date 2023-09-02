@@ -102,22 +102,27 @@ enum
 };
 
 
+enum{
+	Pt100_config = 0x1C,        // 0001 1100  8倍增益  
+	Pt10_config  = 0x3C,         //0011 1100   128倍增益
+	Cu50_config  = 0x3C,          //0011 1100   128倍增益
+	Cu100_config = 0xC0,        //0011  0000   64倍增益
+};
 
 
 
 
 
 
-
-void TM7705_Init(void);                               			/*初始化*/
-void TM7705_Calibself(void); /*TM7705自校准函数*/
-void TM7705_WriteReg(u8 reg_name,u8 data);       /*向TM7705指定寄存器写入数据*/
+void TM7705_Init(uint8_t type);                    	/*初始化*/
+void TM7705_Calibself(uint8_t type);                       /*TM7705自校准函数*/
+void TM7705_WriteReg(u8 reg_name,u8 data);        /*向TM7705指定寄存器写入数据*/
 int TM7705_RDY(void);
 u16 TM7705_ReadData_CH1(void);       					           /*读TM7705的采样数据*/
 u16 TM7705_ReadData_CH2(void);
-void DRDY_EXTI_Open(void);         /*打开中断触发*/
-void DRDY_EXTI_Close(void);        /*关闭中断触发*/
-void DRDYINT_Init(void);   /*DRDY中断配置初始化*/
+void DRDY_EXTI_Open(void);              /*打开中断触发*/
+void DRDY_EXTI_Close(void);            /*关闭中断触发*/
+void DRDYINT_Init(void);              /*DRDY中断配置初始化*/
 
 
 

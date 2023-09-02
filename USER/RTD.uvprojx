@@ -570,6 +570,11 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\rtc.c</FilePath>
             </File>
+            <File>
+              <FileName>tm7705.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\tm7705.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

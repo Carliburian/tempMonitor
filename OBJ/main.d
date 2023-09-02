@@ -36,3 +36,5 @@
 ..\obj\main.o: ..\SYSTEM\flash\flash.h
 ..\obj\main.o: ..\HARDWARE\rtc.h
 ..\obj\main.o: ..\SOFTWARE\spi_dma.h
+..\obj\main.o: ..\HARDWARE\tm7705.h
+..\obj\main.o: C:\Keil_v5\ARM\AC5\Bin\..\include\string.h

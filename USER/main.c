@@ -7,8 +7,12 @@
 #include "flash.h"
 #include "rtc.h"
 #include "spi_dma.h"
+#include "tm7705.h"
 extern char TimeDisplay;
 char flag=0;
+
+uint16_t DMA_buf[64];
+
 int main(void)
 {
 
@@ -19,6 +23,8 @@ int main(void)
     Max485_init();
     RTC_Init();
 		SPI2_Init();
+		DMA_SPI_Init((uint32_t)&DMA_buf,10);
+	  TM7705_Init(0);
     while(1)
     {
 				

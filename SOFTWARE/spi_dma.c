@@ -46,11 +46,13 @@ void SPI2_Init()
     SPI_InitStucrture.SPI_FirstBit=SPI_FirstBit_MSB;//高位传输还是低位传输
     SPI_InitStucrture.SPI_BaudRatePrescaler=SPI_BaudRatePrescaler_32;//波特率预分频的值
     SPI_InitStucrture.SPI_NSS=SPI_NSS_Soft;//片选 软件管理还是硬件管理
+		
 
     SPI_Init(SPI2,&SPI_InitStucrture);
     SPI_Cmd(SPI2,ENABLE);
     //	SPI2_ReadWriteByte(0xFF);//启动传输
     //SPI2_SetSpeed(SPI_BaudRatePrescaler_2);//设置为18mhz时钟，高速模式
+		SPI_I2S_DMACmd(SPI2,SPI_I2S_DMAReq_Rx,ENABLE);//使能spi2的dma接收接口
 
 }
 
@@ -118,10 +120,10 @@ void DMA_SPI_Init(uint32_t DMA_Addr,uint32_t Buffer_Size)
 		DMA_DeInit(DMA1_Channel4);//spi2对应通道4
 		DMA_size=Buffer_Size;
 	
-		DMA_InitStructure.DMA_PeripheralBaseAddr=(uint32_t)&SPI2->DR;//外设地址 SPI2的数据寄存器 强转成32位
+		DMA_InitStructure.DMA_PeripheralBaseAddr=(uint32_t)&(SPI2->DR);//外设地址 SPI2的数据寄存器 强转成32位
 		DMA_InitStructure.DMA_MemoryBaseAddr=(uint32_t)&DMA_Addr;   //内存地址 传入的变量的指针
-		DMA_InitStructure.DMA_DIR=DMA_DIR_PeripheralSRC;//定义传输方向 外设为源数据地址
-		DMA_InitStructure.DMA_BufferSize=Buffer_Size;//定义每一次传输内容的大小
+		DMA_InitStructure.DMA_DIR=DMA_DIR_PeripheralSRC;//定义传输方向 外设为源数据地址,要传入内存
+		DMA_InitStructure.DMA_BufferSize=DMA_size;//传输数据量 ，暂定为10份数据   20B
 		DMA_InitStructure.DMA_PeripheralInc=DMA_PeripheralInc_Disable;//传输完后外设地址是否自增  否
 		DMA_InitStructure.DMA_MemoryInc=DMA_MemoryInc_Enable;//传输完后内存地址是否自增 是
 		DMA_InitStructure.DMA_PeripheralDataSize=DMA_PeripheralDataSize_HalfWord;//每次传输的数据大小  7705为16位数据，所以传输半字
@@ -139,7 +141,7 @@ void DMA_SPI_Init(uint32_t DMA_Addr,uint32_t Buffer_Size)
 /* -------------------------------- begin  -------------------------------- */
 /**
   * @Name    DMA_Transfer
-  * @brief   启动一次传输
+  * @brief   启动一次传输，需要传输数据的时候调用该函数接收 ，每次接收10份数据
   * @param   : [输入/出] 
   * @retval
   * @author  DrMa
@@ -157,9 +159,9 @@ void DMA_Transfer()
 	 DMA_Cmd(DMA1_Channel4,DISABLE);
 	 DMA_SetCurrDataCounter(DMA1_Channel4,DMA_size);//这个函数只有当DMA失能时才能使用
 	 DMA_Cmd(DMA1_Channel4,ENABLE);
-		
-	
-}
+	 while(DMA_GetFlagStatus(DMA1_FLAG_TC4)==RESET);//通道4传输完成标志
+		DMA_ClearFlag(DMA1_FLAG_TC4);
+}//当传输完10个数据后停止传输
 
  
 
