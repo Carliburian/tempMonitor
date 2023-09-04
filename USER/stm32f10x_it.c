@@ -104,7 +104,8 @@ void RTC_IRQHandler(void)
         /* Enable time update */
 //    TimeDisplay = 1;//使用了 一个标志位来指示是否需要显示时间
         time_str= RTC_ReadTime();
-				Usart_SendStr(DEBUG_USARTx,time_str);
+				printk("%s",time_str);
+				//Usart_SendStr(DEBUG_USARTx,time_str);
 				printk("\r\n");
         /* Wait until last write operation on RTC registers has finished */
         RTC_WaitForLastTask();

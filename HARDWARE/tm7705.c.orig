@@ -40,7 +40,7 @@ char voltage2[5];//用于显示通道二的实际毫伏值
 /* -------------------------------- begin  -------------------------------- */
 /**
   * @Name    TM7705_Init
-  * @brief
+  * @brief  
   * @param   type: [输入/出]  传入热电阻类型，不同的热电阻类型对应不同的参数
   * @retval
   * @author  DrMa
@@ -56,39 +56,39 @@ char voltage2[5];//用于显示通道二的实际毫伏值
 void TM7705_Init(uint8_t type)
 {
     u8 general_clock_config=0x04;//时钟寄存器的设置 不禁能，不分频，50hz输出 ，20ms一个数据
-    u8 TR_config;
-    switch(type)
-    {
-    case 0:
-        TR_config=Pt100_config;
-        break;
-    case 1:
-        TR_config=Pt10_config;
-        break;
-    case 2:
-        TR_config=Cu100_config;
-        break;
-    case 3:
-        TR_config=Cu50_config;
-        break;
-    }
-
-
+		u8 TR_config;
+		switch(type)
+		{
+			case 0:
+				TR_config=Pt100_config;
+				break;
+			case 1:
+				TR_config=Pt10_config;
+				break;
+			case 2:
+				TR_config=Cu100_config;
+				break;
+			case 3:
+				TR_config=Cu50_config;
+				break;
+		}
+    
+	
     TM7705_WriteReg(REG_SETUP,TR_config); //0x10 0x14   0001 0000
     delay_ms(1);
     TM7705_WriteReg(REG_CLOCK,general_clock_config); //0000 0100
     delay_ms(1);
 
-
+	
     TM7705_WriteReg(REG_SETUP_CH2,TR_config);//通道二也是正常工作模式 8倍增益 单极性 不使能缓冲
     delay_ms(1);
     TM7705_WriteReg(REG_CLOCK_CH2,general_clock_config);//不禁能，不分频，50hz输出 ，20ms一个数据
     delay_ms(1);
-
-    TM7705_Calibself(type);
-
-
-
+		
+		TM7705_Calibself(type);
+		
+		
+		
 }
 
 
@@ -113,23 +113,23 @@ void TM7705_Calibself(uint8_t type)
 {
     u8 data=0;
     u8 Reg_Ins;  //配置寄存器，  自校正模式 ，8倍增益 ，单极性 缓冲不使能  0101 1100
-
-    switch(type)
-    {
-    case 0:
-        Reg_Ins=Pt100_config;
-        break;
-    case 1:
-        Reg_Ins=Pt10_config;
-        break;
-    case 2:
-        Reg_Ins=Cu100_config;
-        break;
-    case 3:
-        Reg_Ins=Cu50_config;
-        break;
-    }
-    Reg_Ins+=0x40;//转换为自校正模式
+	
+	switch(type)
+		{
+			case 0:
+				Reg_Ins=Pt100_config;
+				break;
+			case 1:
+				Reg_Ins=Pt10_config;
+				break;
+			case 2:
+				Reg_Ins=Cu100_config;
+				break;
+			case 3:
+				Reg_Ins=Cu50_config;
+				break;
+		}
+		Reg_Ins+=0x40;//转换为自校正模式
     //自校正通道一
     TM7705_WriteReg(REG_SETUP,Reg_Ins);
     delay_ms(190);
@@ -160,7 +160,7 @@ void TM7705_Calibself(uint8_t type)
     data=SPI2_ReadWriteByte(0xFF);
     data=SPI2_ReadWriteByte(0XFF);
     data=SPI2_ReadWriteByte(0XFF);
-
+		
 }
 
 
@@ -283,12 +283,11 @@ u16 TM7705_ReadData_CH2()
 
 void DMA_ReadData()
 {
-    uint8_t Reg_Ins;
-		
-    Reg_Ins=(REG_DATA|0x08); //0x30 0x08   0 011 1000  adc结果寄存器 读操作
-    SPI2_ReadWriteByte(Reg_Ins);
-    SPI2_ReadWriteByte(0xEE);
-    SPI2_ReadWriteByte(0xEE);
+	uint8_t Reg_Ins;
+	Reg_Ins=(REG_DATA|0x08); //0x30 0x08   0 011 1000  adc结果寄存器 读操作
+	SPI2_ReadWriteByte(Reg_Ins);
+    Data_H=SPI2_ReadWriteByte(0xEE);
+    Data_L=SPI2_ReadWriteByte(0xEE);
 }
 
 
@@ -356,9 +355,9 @@ void DRDYINT_Init()
 
 void EXTI15_10_IRQHandler()
 {
-    DMA_Transfer();
-
-
+		DMA_Transfer();
+    
+		
     EXTI_ClearITPendingBit(EXTI_Line12);
 
 

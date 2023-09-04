@@ -1,0 +1,50 @@
+/**
+  ************************************* Copyright ******************************
+  *
+  *                 (C) Copyright 2023,DrMa,China, GCU.
+  *                            All Rights Reserved
+  *
+  *                     By(ElonMa)
+  *
+  *
+  * FileName   : cd4052.c
+  * Version    : v1.0
+  * Author     : DrMa
+  * Date       : 2023-09-04
+  * Description:
+  * Function List:
+  	1. ....
+  	   <version>:
+  <modify staff>:
+  		  <data>:
+   <description>:
+  	2. ...
+  ******************************************************************************
+ */
+#include "CD4052.h"
+
+
+
+/* -------------------------------- begin  -------------------------------- */
+/**
+  * @Name    CD4052_Init
+  * @brief 	 CD4052初始化
+  * @param   None
+  * @retval
+  * @author  DrMa
+  * @Data    2023-06-29
+  * 1. ...
+  * <modify staff>:
+  * <data>        :
+  * <description> :
+  * 2. ...
+ **/
+/* -------------------------------- end -------------------------------- */
+
+void CD4052_Init(void)
+{
+    RCC->APB2ENR|=1<<3;//开启PORTB时钟
+    GPIOB->CRL&=0X00000000;
+    GPIOB->CRL|=0X33000000; //PB6 PB7 推挽50mhz
+    GPIOB->ODR=0X0000;//初始化设为00  此时rtd1有电流
+}

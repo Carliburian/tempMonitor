@@ -30,3 +30,5 @@
 ..\obj\spi_dma.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\spi_dma.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\spi_dma.o: ..\STM32F10x_FWLib\inc\misc.h
+..\obj\spi_dma.o: ..\HARDWARE\tm7705.h
+..\obj\spi_dma.o: C:\Keil_v5\ARM\AC5\Bin\..\include\string.h

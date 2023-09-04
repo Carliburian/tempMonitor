@@ -1,0 +1,57 @@
+/*
+ * @Author: Drma
+ * @Date: 2023-06-28 13:59:52
+ * @LastEditors: Drma
+ * @LastEditTime: 2023-07-23 15:42:31
+ * @Description: 
+ */
+/**
+  ************************************* Copyright ******************************   
+  *                 (C) Copyright 2023,DrMa,China, GCU.
+  *                            All Rights Reserved
+  *                              
+  *                     By(ElonMa)
+  *                     https://github.com/GCUWildwolfteam
+  *      
+  * FileName   : CD4052.h   
+  * Version    : v1.0		
+  * Author     : DrMa
+  * Date       : 2023-09-04
+  * Description:    
+  * Function List:  
+  	1. ....
+  	   <version>: 		
+  <modify staff>:
+  		  <data>:
+   <description>:  
+  	2. ...
+  ******************************************************************************
+ */
+
+
+#ifndef __C_D4052_H_
+#define __C_D4052_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "stm32f10x.h"
+
+typedef enum
+{
+    RTD1=0X0000, 	 //0000 0000 0000 0000
+    RTD2=0X0040,   //0000 0000 0100 0000
+    RTD3=0X0080,   //0000 0000 1000 0000
+    RTD4=0X00C0,   //0000 0000 1100 0000
+} RTD;
+
+
+#define RTDOUT(RTD) GPIOB->ODR=(GPIOB->ODR&0xff0f)|(RTD&0x00f0);      //7-4位
+
+void CD4052_Init(void);
+
+#endif
+
+
+ 
+

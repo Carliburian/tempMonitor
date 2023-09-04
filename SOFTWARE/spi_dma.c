@@ -1,6 +1,6 @@
 #include "spi_dma.h"
 #include "stm32f10x.h"
-
+#include "tm7705.h"
 uint32_t DMA_size;
 
 /* -------------------------------- begin  -------------------------------- */
@@ -126,7 +126,7 @@ void DMA_SPI_Init(uint32_t DMA_Addr,uint32_t Buffer_Size)
 		DMA_InitStructure.DMA_BufferSize=DMA_size;//传输数据量 ，暂定为10份数据   20B
 		DMA_InitStructure.DMA_PeripheralInc=DMA_PeripheralInc_Disable;//传输完后外设地址是否自增  否
 		DMA_InitStructure.DMA_MemoryInc=DMA_MemoryInc_Enable;//传输完后内存地址是否自增 是
-		DMA_InitStructure.DMA_PeripheralDataSize=DMA_PeripheralDataSize_HalfWord;//每次传输的数据大小  7705为16位数据，所以传输半字
+		DMA_InitStructure.DMA_PeripheralDataSize=DMA_PeripheralDataSize_HalfWord;//每次传输的数据大小  spi为8位数据，所以传输半字
 		DMA_InitStructure.DMA_MemoryDataSize=DMA_MemoryDataSize_HalfWord;
 		DMA_InitStructure.DMA_Mode=DMA_Mode_Normal;//单次传输  另一种为循环传输
 		DMA_InitStructure.DMA_Priority=DMA_Priority_VeryHigh;//优先级为非常高
@@ -158,10 +158,12 @@ void DMA_Transfer()
 {
 	 DMA_Cmd(DMA1_Channel4,DISABLE);
 	 DMA_SetCurrDataCounter(DMA1_Channel4,DMA_size);//这个函数只有当DMA失能时才能使用
+	 
 	 DMA_Cmd(DMA1_Channel4,ENABLE);
+	 DMA_ReadData();
 	 while(DMA_GetFlagStatus(DMA1_FLAG_TC4)==RESET);//通道4传输完成标志
 		DMA_ClearFlag(DMA1_FLAG_TC4);
-}//当传输完10个数据后停止传输
+}//当传输完DMA_size个数据后停止传输
 
  
 

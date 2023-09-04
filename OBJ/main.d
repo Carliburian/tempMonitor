@@ -38,3 +38,4 @@
 ..\obj\main.o: ..\SOFTWARE\spi_dma.h
 ..\obj\main.o: ..\HARDWARE\tm7705.h
 ..\obj\main.o: C:\Keil_v5\ARM\AC5\Bin\..\include\string.h
+..\obj\main.o: ..\HARDWARE\cd4052.h
