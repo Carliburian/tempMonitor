@@ -1287,17 +1287,17 @@ Image Symbol Table
     .data                                    0x20000034   Section       12  rtc.o(.data)
     .data                                    0x20000040   Section        4  rtc.o(.data)
     .data                                    0x20000044   Section        4  spi_dma.o(.data)
-    .bss                                     0x20000048   Section      128  main.o(.bss)
-    .bss                                     0x200000c8   Section       80  rtc.o(.bss)
-    tm_str                                   0x200000c8   Data          80  rtc.o(.bss)
-    .bss                                     0x20000118   Section       44  localtime.o(.bss)
-    _tms                                     0x20000118   Data          44  localtime.o(.bss)
-    .bss                                     0x20000144   Section       96  libspace.o(.bss)
-    HEAP                                     0x200001a8   Section      512  startup_stm32f10x_hd.o(HEAP)
-    Heap_Mem                                 0x200001a8   Data         512  startup_stm32f10x_hd.o(HEAP)
-    STACK                                    0x200003a8   Section     1024  startup_stm32f10x_hd.o(STACK)
-    Stack_Mem                                0x200003a8   Data        1024  startup_stm32f10x_hd.o(STACK)
-    __initial_sp                             0x200007a8   Data           0  startup_stm32f10x_hd.o(STACK)
+    .bss                                     0x20000048   Section       64  main.o(.bss)
+    .bss                                     0x20000088   Section       80  rtc.o(.bss)
+    tm_str                                   0x20000088   Data          80  rtc.o(.bss)
+    .bss                                     0x200000d8   Section       44  localtime.o(.bss)
+    _tms                                     0x200000d8   Data          44  localtime.o(.bss)
+    .bss                                     0x20000104   Section       96  libspace.o(.bss)
+    HEAP                                     0x20000168   Section      512  startup_stm32f10x_hd.o(HEAP)
+    Heap_Mem                                 0x20000168   Data         512  startup_stm32f10x_hd.o(HEAP)
+    STACK                                    0x20000368   Section     1024  startup_stm32f10x_hd.o(STACK)
+    Stack_Mem                                0x20000368   Data        1024  startup_stm32f10x_hd.o(STACK)
+    __initial_sp                             0x20000768   Data           0  startup_stm32f10x_hd.o(STACK)
 
     Global Symbols
 
@@ -1560,7 +1560,7 @@ Image Symbol Table
     DMA_GetFlagStatus                        0x08002381   Thumb Code    24  stm32f10x_dma.o(i.DMA_GetFlagStatus)
     DMA_Init                                 0x080023a1   Thumb Code    58  stm32f10x_dma.o(i.DMA_Init)
     DMA_ReadData                             0x080023db   Thumb Code    24  tm7705.o(i.DMA_ReadData)
-    DMA_SPI_Init                             0x080023f5   Thumb Code    84  spi_dma.o(i.DMA_SPI_Init)
+    DMA_SPI_Init                             0x080023f5   Thumb Code    82  spi_dma.o(i.DMA_SPI_Init)
     DMA_SetCurrDataCounter                   0x08002455   Thumb Code     4  stm32f10x_dma.o(i.DMA_SetCurrDataCounter)
     DMA_Transfer                             0x08002459   Thumb Code    60  spi_dma.o(i.DMA_Transfer)
     DRDYINT_Init                             0x0800249d   Thumb Code   100  tm7705.o(i.DRDYINT_Init)
@@ -1654,9 +1654,9 @@ Image Symbol Table
     MyRTC_Time                               0x20000034   Data          12  rtc.o(.data)
     time_str                                 0x20000040   Data           4  rtc.o(.data)
     DMA_size                                 0x20000044   Data           4  spi_dma.o(.data)
-    DMA_buf                                  0x20000048   Data         128  main.o(.bss)
-    __libspace_start                         0x20000144   Data          96  libspace.o(.bss)
-    __temporary_stack_top$libspace           0x200001a4   Data           0  libspace.o(.bss)
+    DMA_buf                                  0x20000048   Data          64  main.o(.bss)
+    __libspace_start                         0x20000104   Data          96  libspace.o(.bss)
+    __temporary_stack_top$libspace           0x20000164   Data           0  libspace.o(.bss)
 
 
 
@@ -1936,17 +1936,17 @@ Memory Map of the image
     0x20000044   0x0800385c   0x00000004   Data   RW         2513    .data               spi_dma.o
 
 
-    Execution Region ER_ZI (Exec base: 0x20000048, Load base: 0x08003860, Size: 0x00000760, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Exec base: 0x20000048, Load base: 0x08003860, Size: 0x00000720, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000048        -       0x00000080   Zero   RW            2    .bss                main.o
-    0x200000c8        -       0x00000050   Zero   RW         2374    .bss                rtc.o
-    0x20000118        -       0x0000002c   Zero   RW         2579    .bss                c_w.l(localtime.o)
-    0x20000144        -       0x00000060   Zero   RW         2611    .bss                c_w.l(libspace.o)
-    0x200001a4   0x08003860   0x00000004   PAD
-    0x200001a8        -       0x00000200   Zero   RW          445    HEAP                startup_stm32f10x_hd.o
-    0x200003a8        -       0x00000400   Zero   RW          444    STACK               startup_stm32f10x_hd.o
+    0x20000048        -       0x00000040   Zero   RW            2    .bss                main.o
+    0x20000088        -       0x00000050   Zero   RW         2374    .bss                rtc.o
+    0x200000d8        -       0x0000002c   Zero   RW         2579    .bss                c_w.l(localtime.o)
+    0x20000104        -       0x00000060   Zero   RW         2611    .bss                c_w.l(libspace.o)
+    0x20000164   0x08003860   0x00000004   PAD
+    0x20000168        -       0x00000200   Zero   RW          445    HEAP                startup_stm32f10x_hd.o
+    0x20000368        -       0x00000400   Zero   RW          444    STACK               startup_stm32f10x_hd.o
 
 
 ==============================================================================
@@ -1959,10 +1959,10 @@ Image component sizes
        250         20          0          4          0       4036   bsp_usart.o
         44         10          0          0          0        406   cd4052.o
        112         20          0          4          0     207984   delay.o
-        68          8          0          0        128      45484   main.o
+        68          8          0          0         64      45484   main.o
        144         16          0          0          0       1977   misc.o
        752        204          0         16         80       4251   rtc.o
-       400         34          0          4          0       2502   spi_dma.o
+       400         36          0          4          0       2534   spi_dma.o
         64         26        304          0       1536        776   startup_stm32f10x_hd.o
         50          8          0          0          0       2552   stm32f10x_bkp.o
        368         26          0          0          0       5111   stm32f10x_dma.o
@@ -1979,7 +1979,7 @@ Image component sizes
        460         10          0          0          0       3668   tm7705.o
 
     ----------------------------------------------------------------------
-      4534        576        336         72       1744     314051   Object Totals
+      4534        578        336         72       1680     314083   Object Totals
          0          0         32          0          0          0   (incl. Generated)
         18          0          0          3          0          0   (incl. Padding)
 
@@ -2097,14 +2097,14 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     13072       1002       1288         72       1888     312151   Grand Totals
-     13072       1002       1288         72       1888     312151   ELF Image Totals
-     13072       1002       1288         72          0          0   ROM Totals
+     13072       1004       1288         72       1824     312183   Grand Totals
+     13072       1004       1288         72       1824     312183   ELF Image Totals
+     13072       1004       1288         72          0          0   ROM Totals
 
 ==============================================================================
 
     Total RO  Size (Code + RO Data)                14360 (  14.02kB)
-    Total RW  Size (RW Data + ZI Data)              1960 (   1.91kB)
+    Total RW  Size (RW Data + ZI Data)              1896 (   1.85kB)
     Total ROM Size (Code + RO Data + RW Data)      14432 (  14.09kB)
 
 ==============================================================================

@@ -12,7 +12,7 @@
 extern char TimeDisplay;
 char flag=0;
 
-uint16_t DMA_buf[64];
+uint8_t DMA_buf[64];
 
 int main(void)
 {
@@ -24,7 +24,7 @@ int main(void)
     RTC_Init();
 		CD4052_Init();
 		SPI2_Init();
-		DMA_SPI_Init((uint32_t)&DMA_buf,1);
+		DMA_SPI_Init((uint32_t)DMA_buf,1);
 		
 	  TM7705_Init(0);
 		
