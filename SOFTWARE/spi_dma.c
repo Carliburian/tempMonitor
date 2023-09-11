@@ -44,16 +44,16 @@ void SPI2_Init()
     SPI_InitStucrture.SPI_CPOL=SPI_CPOL_Low;//空闲状态是高电平
     SPI_InitStucrture.SPI_CPHA=SPI_CPHA_1Edge;//偶数沿采样  先输出，后采样
     SPI_InitStucrture.SPI_FirstBit=SPI_FirstBit_MSB;//高位传输还是低位传输
-    SPI_InitStucrture.SPI_BaudRatePrescaler=SPI_BaudRatePrescaler_32;//波特率预分频的值
+    SPI_InitStucrture.SPI_BaudRatePrescaler=SPI_BaudRatePrescaler_16;//波特率预分频的值
     SPI_InitStucrture.SPI_NSS=SPI_NSS_Soft;//片选 软件管理还是硬件管理
 		
 
     SPI_Init(SPI2,&SPI_InitStucrture);
-    SPI_Cmd(SPI2,ENABLE);
+    
     //	SPI2_ReadWriteByte(0xFF);//启动传输
     //SPI2_SetSpeed(SPI_BaudRatePrescaler_2);//设置为18mhz时钟，高速模式
 		SPI_I2S_DMACmd(SPI2,SPI_I2S_DMAReq_Rx,ENABLE);//使能spi2的dma接收接口
-
+		SPI_Cmd(SPI2,ENABLE);
 }
 
 
@@ -120,7 +120,7 @@ void DMA_SPI_Init(uint32_t DMA_Addr,uint32_t Buffer_Size)
 	  DMA_size=Buffer_Size;
 		//使能DMA接收
 		DMA_DeInit(DMA1_Channel4);//spi2接收对应通道4
-		DMA_InitStructure.DMA_PeripheralBaseAddr=(uint32_t)&(SPI2->DR);//外设地址 SPI2的数据寄存器 强转成32位
+		DMA_InitStructure.DMA_PeripheralBaseAddr=(uint32_t)(&(SPI2->DR));//外设地址 SPI2的数据寄存器 强转成32位
 		DMA_InitStructure.DMA_MemoryBaseAddr=(uint32_t)DMA_Addr;   //内存地址 传入的变量的指针
 		DMA_InitStructure.DMA_DIR=DMA_DIR_PeripheralSRC;//定义传输方向 外设为源数据地址,要传入内存
 		DMA_InitStructure.DMA_BufferSize=DMA_size;//传输数据量 ，暂定为10份数据   20B
@@ -134,23 +134,23 @@ void DMA_SPI_Init(uint32_t DMA_Addr,uint32_t Buffer_Size)
 		DMA_Init(DMA1_Channel4,&DMA_InitStructure);//配置SPI2接收完成
 		DMA_Cmd(DMA1_Channel4,DISABLE);
 		
-//		//使能DMA发送
-//		DMA_DeInit(DMA1_Channel5);//spi2发送对应通道4
-//		DMA_InitStructure.DMA_PeripheralBaseAddr=(uint32_t)&(SPI2->DR);//外设地址 SPI2的数据寄存器 强转成32位
-//		DMA_InitStructure.DMA_MemoryBaseAddr=;   //内存地址 传入的变量的指针
-//		DMA_InitStructure.DMA_DIR=DMA_DIR_PeripheralDST;//定义传输方向 外设为源数据地址,要传入内存
-//		DMA_InitStructure.DMA_BufferSize=DMA_size;//传输数据量 
-//		DMA_InitStructure.DMA_PeripheralInc=DMA_PeripheralInc_Disable;//传输完后外设地址是否自增  否
-//		DMA_InitStructure.DMA_MemoryInc=DMA_MemoryInc_Enable;//传输完后内存地址是否自增 是
-//		DMA_InitStructure.DMA_PeripheralDataSize=DMA_PeripheralDataSize_Byte;//每次传输的数据大小  spi为8位数据，所以传输半字
-//		DMA_InitStructure.DMA_MemoryDataSize=DMA_PeripheralDataSize_Byte;
-//		DMA_InitStructure.DMA_Mode=DMA_Mode_Normal;//单次传输  另一种为循环传输
-//		DMA_InitStructure.DMA_Priority=DMA_Priority_VeryHigh;//优先级为非常高
-//		DMA_InitStructure.DMA_M2M=DMA_M2M_Disable;//禁止内存到内存的传输
-//		DMA_Init(DMA1_Channel4,&DMA_InitStructure);//配置SPI2接收完成
-//		DMA_Cmd(DMA1_Channel4,DISABLE);
+		
 }
 
+static void DMA_NVIC_Configration(void)
+{
+		NVIC_InitTypeDef NVIC_InitStructure;
+		// 配置NVIC中断
+    NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel4_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+	
+		// 设置DMA传输完成中断
+    DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
+		
+}
 /* -------------------------------- begin  -------------------------------- */
 /**
   * @Name    DMA_Transfer
@@ -169,11 +169,13 @@ void DMA_SPI_Init(uint32_t DMA_Addr,uint32_t Buffer_Size)
 
 void DMA_Transfer()
 {
+	 
 	 DMA_Cmd(DMA1_Channel4,DISABLE);
 	 DMA_SetCurrDataCounter(DMA1_Channel4,DMA_size);//这个函数只有当DMA失能时才能使用
-	 
 	 DMA_Cmd(DMA1_Channel4,ENABLE);
-	 DMA_ReadData();
+	 
+	 
+	
 	 while(DMA_GetFlagStatus(DMA1_FLAG_TC4)==RESET);//通道4传输完成标志
 		DMA_ClearFlag(DMA1_FLAG_TC4);
 }//当传输完DMA_size个数据后停止传输

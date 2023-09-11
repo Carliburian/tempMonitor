@@ -24,6 +24,8 @@
 #include "tm7705.h"
 #include "delay.h"
 #include "spi_dma.h"
+//DMA读值
+ uint8_t Reg_Ins_RD;
 
 //static unsigned char sw=0;
 u32 adVal1=0;//接收通道一的值
@@ -136,14 +138,14 @@ void TM7705_Calibself(uint8_t type)
     while(DataRDY!=0);//等于0说明数据准备完成，不等于0说明还没校正完成
     SPI2_ReadWriteByte(0x68);//0110 1000   零点偏移寄存器 读操作
     //读取零点偏移寄存器的值 挤出3字节数据
-    data=SPI2_ReadWriteByte(0xFF);
-    data=SPI2_ReadWriteByte(0XFF);
-    data=SPI2_ReadWriteByte(0XFF);
+    data=SPI2_ReadWriteByte(0xFE);
+    data=SPI2_ReadWriteByte(0XFE);
+    data=SPI2_ReadWriteByte(0XFE);
     //读取增益系数寄存器的值，挤出3字节数据
     SPI2_ReadWriteByte(0X78);  //  0111 1000  增益系数寄存器 读操作
-    data=SPI2_ReadWriteByte(0xFF);
-    data=SPI2_ReadWriteByte(0XFF);
-    data=SPI2_ReadWriteByte(0XFF);
+    data=SPI2_ReadWriteByte(0xFE);
+    data=SPI2_ReadWriteByte(0XFE);
+    data=SPI2_ReadWriteByte(0XFE);
 
 
     //自校正通道二
@@ -152,14 +154,14 @@ void TM7705_Calibself(uint8_t type)
     while(DataRDY!=0);//等于0说明数据准备完成，不等于0说明还没校正完成
     SPI2_ReadWriteByte(0x69);//0110 1001   零点偏移寄存器 读操作
     //读取零点偏移寄存器的值 挤出3字节数据
-    data=SPI2_ReadWriteByte(0xFF);
-    data=SPI2_ReadWriteByte(0XFF);
-    data=SPI2_ReadWriteByte(0XFF);
+    data=SPI2_ReadWriteByte(0xFE);
+    data=SPI2_ReadWriteByte(0XFE);
+    data=SPI2_ReadWriteByte(0XFE);
     //读取增益系数寄存器的值，挤出3字节数据
     SPI2_ReadWriteByte(0X79);  //  0111 1001  增益系数寄存器 读操作
-    data=SPI2_ReadWriteByte(0xFF);
-    data=SPI2_ReadWriteByte(0XFF);
-    data=SPI2_ReadWriteByte(0XFF);
+    data=SPI2_ReadWriteByte(0xFE);
+    data=SPI2_ReadWriteByte(0XFE);
+    data=SPI2_ReadWriteByte(0XFE);
 
 }
 
@@ -283,10 +285,9 @@ u16 TM7705_ReadData_CH2()
 
 void DMA_ReadData()
 {
-    uint8_t Reg_Ins;
 		
-    Reg_Ins=(REG_DATA|0x08); //0x30 0x08   0 011 1000  adc结果寄存器 读操作
-    SPI2_ReadWriteByte(Reg_Ins);
+    Reg_Ins_RD=(REG_DATA|0x08); //0x30 0x08   0 011 1000  adc结果寄存器 读操作
+    SPI2_ReadWriteByte(Reg_Ins_RD);
     SPI2_ReadWriteByte(0xEE);
     SPI2_ReadWriteByte(0xEE);
 }
@@ -356,9 +357,10 @@ void DRDYINT_Init()
 
 void EXTI15_10_IRQHandler()
 {
-    DMA_Transfer();
+    
+		
 
-
+		DMA_ReadData(); 
     EXTI_ClearITPendingBit(EXTI_Line12);
 
 

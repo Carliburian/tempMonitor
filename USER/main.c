@@ -11,9 +11,9 @@
 #include "cd4052.h"
 extern char TimeDisplay;
 char flag=0;
-
-uint8_t DMA_buf[64];
-
+#define DMA_Size  256
+uint8_t DMA_buf[DMA_Size];
+void Data_Analysis(void);
 int main(void)
 {
 
@@ -24,12 +24,18 @@ int main(void)
     RTC_Init();
 		CD4052_Init();
 		SPI2_Init();
-		DMA_SPI_Init((uint32_t)DMA_buf,1);
+		DMA_SPI_Init((uint32_t)DMA_buf,DMA_Size);
 		
-	  TM7705_Init(0);
+	  TM7705_Init(1);
 		
 		RTDOUT(RTD3);
-		DRDYINT_Init();
+		DRDYINT_Init();	
+		DMA_Transfer();
+		//Data_Analysis();
+		memset(DMA_buf,0,DMA_Size);
+		RTDOUT(RTD1);
+		DMA_Transfer();
+		Data_Analysis();
 		
     while(1)
     {
@@ -38,4 +44,22 @@ int main(void)
     }
 
 
+}
+
+
+void Data_Analysis(void)
+{
+	int i=1,j=2;
+	uint16_t data;
+	while(i<DMA_Size&&j<DMA_Size)
+	{
+		data=DMA_buf[i]<<8|DMA_buf[j];
+		i+=3;
+		j+=3;
+		printk("%d,",data);
+	}
+	
+	
+	
+	
 }
